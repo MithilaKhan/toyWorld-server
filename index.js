@@ -71,6 +71,45 @@ async function run() {
       const result = await toyCollection.findOne(query);
       res.send(result)
     })
+
+// get data to using email 
+app.get("/myToys" , async(req , res)=>{
+  let query ={}
+  console.log(req.query?.sellerEmail);
+  if(req.query?.sellerEmail){
+    query ={sellerEmail: req.query.sellerEmail}
+  }
+  const cursor =toyCollection.find(query);
+  const result = await cursor.toArray()
+  res.send(result)
+})
+
+// updated toy 
+app.put("/allToy/:id" , async(req , res)=>{
+  const id = req.params.id 
+  const toy = req.body 
+  const filter ={_id:new ObjectId(id)}
+  const options ={upsert:true}
+  const updateToy = {
+    $set:{
+        price:toy.price,
+      quantity:toy.quantity,
+     description:toy.description
+    }
+  }
+  console.log(updateToy);
+  const result = await toyCollection.updateOne(filter, updateToy, options);
+  res.send(result)
+})
+
+// delete toy data 
+app.put("/allToy/:id" , async(req , res)=>{
+  const id =req.params.id 
+  const query = { _id: new ObjectId(id) };
+  const result = await toyCollection.deleteOne(query);
+})
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
