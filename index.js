@@ -103,10 +103,11 @@ app.put("/allToy/:id" , async(req , res)=>{
 })
 
 // delete toy data 
-app.put("/allToy/:id" , async(req , res)=>{
+app.delete("/allToy/:id" , async(req , res)=>{
   const id =req.params.id 
   const query = { _id: new ObjectId(id) };
   const result = await toyCollection.deleteOne(query);
+  res.send(result)
 })
 
 
