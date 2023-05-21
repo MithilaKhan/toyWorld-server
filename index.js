@@ -39,16 +39,24 @@ async function run() {
 
     app.post("/addToy" , async(req ,res) =>{
       const toy = req.body
+      // body.createAt = new Data()
         console.log(toy);
         const result = await toyCollection.insertOne(toy);
         res.send(result)
     })
 
     app.get("/addToy" , async(req ,res)=>{
-      const cursor = toyCollection.find()
+      let query ={}
+  console.log(req.query?.subCategory);
+  if(req.query?.subCategory){
+    query ={subCategory: req.query.subCategory}
+  }
+      const cursor = toyCollection.find(query)
       const result = await cursor.toArray()
       res.send(result)
     })
+
+   
 
     app.get("/searchToy/:text" , async(req , res) =>{
       const text = req.params.text ;
@@ -80,6 +88,12 @@ app.get("/myToys" , async(req , res)=>{
     query ={sellerEmail: req.query.sellerEmail}
   }
   const cursor =toyCollection.find(query);
+  const result = await cursor.toArray()
+  res.send(result)
+})
+
+app.get("/myToys/:lowPrice" , async(req , res) =>{
+  const cursor = toyCollection.find({lowPrice:req.params.price}).sort({"price":dd1})
   const result = await cursor.toArray()
   res.send(result)
 })
