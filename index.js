@@ -12,7 +12,7 @@ app.use(express.json())
 
 
 const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@cluster0.1n864lk.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri);
+// console.log(uri);
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+     client.connect();
     const database = client.db("ToyWorld");
     const toyCollection = database.collection("toyCollection");
 
@@ -92,11 +92,25 @@ app.get("/myToys" , async(req , res)=>{
   res.send(result)
 })
 
-app.get("/myToys/:lowPrice" , async(req , res) =>{
-  const cursor = toyCollection.find({lowPrice:req.params.price}).sort({"price":dd1})
+// ascending data by price 
+app.get("/toys/:email/lowPrice" , async(req , res) =>{
+  
+  const cursor = toyCollection.find({sellerEmail:req.params.email}).sort({"price":1})
   const result = await cursor.toArray()
   res.send(result)
 })
+
+// ascending data by price 
+app.get("/toys/:email/highPrice" , async(req , res) =>{
+  
+  const cursor = toyCollection.find({sellerEmail:req.params.email}).sort({"price":-1})
+  const result = await cursor.toArray()
+  res.send(result)
+})
+
+
+
+
 
 // updated toy 
 app.put("/allToy/:id" , async(req , res)=>{
